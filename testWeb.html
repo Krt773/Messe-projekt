@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<title>T.CON Berufe-Explorer – Drei Mini-Spiele</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+:root{
+  /* Dark theme + Branding */
+  --bg:#0a0f1a;
+  --panel:#0f172a;
+  --panel-2:#121a2f;
+  --text:#eaf0ff;
+  --muted:#9fb0d0;
+  --line:rgba(255,255,255,.14);
+
+  /* Brand & accents (ggf. mit echten T.CON-Farben ersetzen) */
+  --brand1:#1e88ff;    /* T.CON Blau (Beispiel) */
+  --brand2:#23d4a1;    /* T.CON Grün (Beispiel) */
+  --blue:#2563eb;
+  --vio:#7c5cff;
+  --green:#10b981;
+
+  --radius:18px;
+  --shadow:0 18px 36px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui, "Segoe UI", Roboto, Arial;
+  color:var(--text);
+  background:
+    radial-gradient(900px 600px at 10% 0%, rgba(30,136,255,.14), transparent 50%),
+    radial-gradient(800px 500px at 90% 10%, rgba(35,212,161,.12), transparent 55%),
+    linear-gradient(180deg, #070b14, var(--bg));
+  min-height:100vh;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  padding:16px;
+}
+
+/* App shell */
+.app{ width:100%; max-width:1100px; }
+
+/* Header: zweizeilig (Logo+Titel, darunter Menü in einer Reihe) */
+.header{
+  display:flex; flex-direction:column; gap:10px;
+  background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+  border:1px solid var(--line);
+  border-radius: var(--radius);
+  padding:14px;
+  margin-bottom:12px;
+  box-shadow: var(--shadow);
+}
+.brand{
+  display:flex; align-items:center; gap:12px;
+}
+.brand .logo{ width:120px; height:32px; display:block; }
+.brand .title{ font-weight:800; font-size:18px; letter-spacing:.2px; }
+
+/* Segmented menu (eine Reihe, sauber sortiert) */
+.nav{
+  display:flex; gap:8px; flex-wrap:wrap;
+  background: rgba(255,255,255,.06);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:6px;
+}
+.seg{
+  appearance:none; border:none; cursor:pointer;
+  padding:10px 14px; border-radius:10px; font-weight:800;
+  color:var(--text); background: transparent;
+  transition:.15s ease; min-width:160px;
+}
+.seg.home{ min-width:120px; }
+.seg:hover{ filter:brightness(1.08); transform:translateY(-1px); }
+.seg.active{
+  background: linear-gradient(135deg, var(--brand1), rgba(30,136,255,.65));
+  box-shadow: 0 8px 18px rgba(30,136,255,.35);
+}
+
+/* Card */
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+  border:1px solid var(--line);
+  border-radius: var(--radius);
+  padding:18px;
+  box-shadow: var(--shadow);
+}
+
+h2{ margin:0 0 6px; font-size:22px; }
+.p{ color:var(--muted); font-size:15px; margin:4px 0 12px; }
+
+/* Home grid */
+.grid{
+  display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap:12px;
+}
+.tile{
+  background: rgba(255,255,255,.06);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:16px;
+  cursor:pointer;
+  transition:.15s ease;
+}
+.tile:hover{ transform: translateY(-2px); filter: brightness(1.06); }
+.tile h3{ margin:0 0 6px; font-size:16px; }
+.tile .desc{ color:var(--muted); font-size:13px; }
+
+/* Sections */
+.section{ display:none; }
+.section.active{ display:block; }
+
+/* Question panel */
+.paper{
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:16px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.2);
+}
+
+/* Progress bar */
+.progressWrap{
+  display:flex; align-items:center; gap:12px; margin-bottom:10px;
+}
+.progressBar{
+  position:relative; flex:1; height:10px; border-radius:999px;
+  background: rgba(255,255,255,.08); border:1px solid var(--line);
+  overflow:hidden;
+}
+.progressFill{
+  position:absolute; left:0; top:0; bottom:0; width:0%;
+  background: linear-gradient(90deg, var(--brand1), var(--brand2));
+  border-radius:999px;
+  transition: width .25s ease;
+}
+.progressLabel{ font-size:12px; color:var(--muted); }
+
+/* Question (zentriert) */
+.question{
+  font-size:20px; font-weight:800; text-align:center;
+  line-height:1.4; margin:6px 0 12px 0;
+}
+
+/* Answer buttons */
+.btn{
+  width:100%; padding:18px; margin:10px 0; border:none; border-radius:14px;
+  font-weight:800; font-size:16px; color:white; cursor:pointer;
+  background: linear-gradient(135deg, var(--brand1), rgba(30,136,255,.60));
+  transition: .15s ease;
+}
+.btn:hover{ filter:brightness(1.06); }
+.btn.si{ background: linear-gradient(135deg, var(--blue), rgba(37,99,235,.65)); }
+.btn.ae{ background: linear-gradient(135deg, var(--vio), rgba(124,92,255,.65)); }
+.btn.dm{ background: linear-gradient(135deg, var(--green), rgba(16,185,129,.65)); }
+
+/* Subtiles Feedback */
+.btn.is-correct{
+  outline:2px solid rgba(35,212,161,.55);
+  box-shadow: 0 0 0 3px rgba(35,212,161,.15);
+}
+.btn.is-wrong{
+  outline:2px solid rgba(255,77,77,.30);
+  opacity:.85;
+  filter:saturate(.9);
+}
+.btn.is-dim{ opacity:.6; }
+
+/* Info box */
+.info{
+  background: rgba(255,255,255,.06);
+  border:1px dashed var(--line);
+  border-radius:10px; padding:12px;
+  font-size:14px; line-height:1.5; color:var(--text);
+}
+
+/* Actions row (Neustart/Zurück) */
+.actions{ display:flex; gap:8px; margin-top:8px; }
+.actionBtn{
+  padding:10px 14px; border-radius:12px; font-weight:800; cursor:pointer;
+  border:1px solid var(--line); color:var(--text);
+  background: rgba(255,255,255,.06);
+  transition:.15s ease;
+}
+.actionBtn:hover{ filter:brightness(1.08); transform:translateY(-1px); }
+
+/* Score */
+.score{ text-align:right; font-size:13px; color:var(--muted); }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Header -->
+  <div class="header">
+    <div class="brand">
+      <!-- Inline T.CON Logo (SVG) -->
+      <svg class="logo" viewBox="0 0 220 40" xmlns="http://www.w3.org/2000/svg" aria-label="T.CON Logo">
+        <defs>
+          <linearGradient id="brandGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#1e88ff"/>
+            <stop offset="1" stop-color="#23d4a1"/>
+          </linearGradient>
+        </defs>
+        <rect x="0" y="6" width="40" height="28" rx="6" fill="url(#brandGrad)"/>
+        <circle cx="20" cy="20" r="8" fill="rgba(255,255,255,.85)"/>
+        <text x="56" y="26" font-family="Segoe UI, Arial" font-weight="800" font-size="20" fill="url(#brandGrad)">T.CON</text>
+      </svg>
+      <div class="title">Berufe‑Explorer • T.CON</div>
+    </div>
+
+    <!-- Menü unter dem Titel in EINER Reihe -->
+    <div class="nav" id="nav">
+      <button class="seg home active" data-target="home" onclick="showSection('home')">🏠 Start</button>
+      <button class="seg" data-target="si" onclick="showSection('si')">🖥️ Systemintegration</button>
+      <button class="seg" data-target="ae" onclick="showSection('ae')">💻 Anwendungsentwicklung</button>
+      <button class="seg" data-target="dm" onclick="showSection('dm')">📊 Digitalisierung</button>
+    </div>
+  </div>
+
+  <!-- Home -->
+  <section id="home" class="section active">
+    <div class="card">
+      <h2>Wähle ein Spiel</h2>
+      <div class="p">Pro Runde <b>6 zufällige Fragen</b> (aus 10). Zu jeder Frage gibt es <b>drei Antworten</b>: <b>richtig</b>, <b>falsch</b> und <b>lustig</b>. Antworten werden zufällig gemischt.</div>
+      <div class="grid">
+        <div class="tile" onclick="showSection('si')">
+          <h3>🖥️ IT‑Support (Systemintegration)</h3>
+          <div class="desc">Alltagssituationen aus dem Support. Finde die beste Hilfe.</div>
+        </div>
+        <div class="tile" onclick="showSection('ae')">
+          <h3>💻 Anwendungsentwicklung</h3>
+          <div class="desc">Denkspiel ohne Code: Logik, Reihenfolge, Fehlersuche.</div>
+        </div>
+        <div class="tile" onclick="showSection('dm')">
+          <h3>📊 Digitalisierung</h3>
+          <div class="desc">Welche digitale Lösung bringt das Unternehmen weiter?</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Systemintegration game -->
+  <section id="si" class="section">
+    <div class="card">
+      <div class="score" id="si_score">Punkte: 0</div>
+      <h2>🖥️ IT‑Support – Was machst du jetzt?</h2>
+      <div class="p">Klar lesen. Die beste Support‑Aktion wählen. Fortschritt oben.</div>
+
+      <div class="progressWrap">
+        <div class="progressBar"><div class="progressFill" id="si_prog"></div></div>
+        <div class="progressLabel" id="si_prog_label">Frage 1/6</div>
+      </div>
+
+      <div class="paper">
+        <div class="question" id="si_q"></div>
+        <button class="btn si" id="si_opt1"></button>
+        <button class="btn si" id="si_opt2"></button>
+        <button class="btn si" id="si_opt3"></button>
+        <div class="info" id="si_info"></div>
+      </div>
+
+      <div class="actions">
+        <button class="actionBtn" onclick="resetGame('si')">🔄 Neustart</button>
+        <button class="actionBtn" onclick="showSection('home')">🏠 Zurück</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- AE game -->
+  <section id="ae" class="section">
+    <div class="card">
+      <div class="score" id="ae_score">Punkte: 0</div>
+      <h2>💻 AE – Entwickler‑Denkspiel</h2>
+      <div class="p">Entscheide wie ein Entwickler. Fortschritt siehst du oben.</div>
+
+      <div class="progressWrap">
+        <div class="progressBar"><div class="progressFill" id="ae_prog"></div></div>
+        <div class="progressLabel" id="ae_prog_label">Frage 1/6</div>
+      </div>
+
+      <div class="paper">
+        <div class="question" id="ae_q"></div>
+        <button class="btn ae" id="ae_opt1"></button>
+        <button class="btn ae" id="ae_opt2"></button>
+        <button class="btn ae" id="ae_opt3"></button>
+        <div class="info" id="ae_info"></div>
+      </div>
+
+      <div class="actions">
+        <button class="actionBtn" onclick="resetGame('ae')">🔄 Neustart</button>
+        <button class="actionBtn" onclick="showSection('home')">🏠 Zurück</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- DM game -->
+  <section id="dm" class="section">
+    <div class="card">
+      <div class="score" id="dm_score">Punkte: 0</div>
+      <h2>📊 Digitalisierung – Was hilft wirklich?</h2>
+      <div class="p">Wähle die Lösung, die Prozesse sinnvoll verbessert.</div>
+
+      <div class="progressWrap">
+        <div class="progressBar"><div class="progressFill" id="dm_prog"></div></div>
+        <div class="progressLabel" id="dm_prog_label">Frage 1/6</div>
+      </div>
+
+      <div class="paper">
+        <div class="question" id="dm_q"></div>
+        <button class="btn dm" id="dm_opt1"></button>
+        <button class="btn dm" id="dm_opt2"></button>
+        <button class="btn dm" id="dm_opt3"></button>
+        <div class="info" id="dm_info"></div>
+      </div>
+
+      <div class="actions">
+        <button class="actionBtn" onclick="resetGame('dm')">🔄 Neustart</button>
+        <button class="actionBtn" onclick="showSection('home')">🏠 Zurück</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+/* Router + aktives Menü */
+function showSection(id){
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+
+  document.querySelectorAll('#nav .seg').forEach(b=>{
+    b.classList.toggle('active', b.dataset.target === id);
+  });
+
+  if(id==='si' && !si_state.started) start_si();
+  if(id==='ae' && !ae_state.started) start_ae();
+  if(id==='dm' && !dm_state.started) start_dm();
+}
+
+/* Utils */
+function shuffle(arr){ return arr.sort(()=>Math.random()-0.5); }
+
+/* =========================
+   GAME 1: Systemintegration
+   (10 Fragen – es werden 6 zufällig gespielt)
+   ========================= */
+const si_pool = [
+  { q:"Der PC geht an, aber der Bildschirm bleibt komplett schwarz.",
+    answers:[
+      {text:"Stromkabel, Monitoranschluss und Power‑Button zuerst prüfen.", type:'correct'},
+      {text:"Sofort einen neuen PC bestellen.", type:'wrong'},
+      {text:"Bis morgen warten – vielleicht geht es dann.", type:'funny'}],
+    info:"🧠 Erst die einfachen Hardware‑Sachen prüfen: Strom, Kabel, Monitor." },
+
+  { q:"Der Mitarbeiter sagt: „Das WLAN ist so langsam, Webseiten laden kaum.“",
+    answers:[
+      {text:"Router‑Standort und Störungen prüfen, Verbindung testen.", type:'correct'},
+      {text:"Einfach ignorieren – wird schon schneller.", type:'wrong'},
+      {text:"Fenster öffnen – frische Luft für WLAN.", type:'funny'}],
+    info:"📶 Häufige Ursachen: Entfernung, Wände, andere Geräte. Erst testen." },
+
+  { q:"Der Druckauftrag wird gesendet, aber es kommt kein Ausdruck.",
+    answers:[
+      {text:"Papier/Toner/Kabel und die Drucker‑Warteschlange prüfen.", type:'correct'},
+      {text:"20× auf „Drucken“ klicken.", type:'wrong'},
+      {text:"Den Drucker nett anlächeln.", type:'funny'}],
+    info:"🖨️ Standard‑Check: Status, Toner, Papier, Queue." },
+
+  { q:"Der Benutzer kann sich nicht einloggen. Eine Fehlermeldung erscheint.",
+    answers:[
+      {text:"Fehlermeldung lesen und Passwort/Accountstatus prüfen.", type:'correct'},
+      {text:"Für alle das Passwort auf „1234“ setzen.", type:'wrong'},
+      {text:"Vielleicht hat die Tastatur Montag.", type:'funny'}],
+    info:"🔐 Erst verstehen, warum der Login scheitert (Fehlermeldung lesen)." },
+
+  { q:"Ein Programm öffnet sich nicht – beim Start passiert gar nichts.",
+    answers:[
+      {text:"Fehlermeldung prüfen, Updates suchen, Neustart testen.", type:'correct'},
+      {text:"Gleich das ganze Betriebssystem neu installieren.", type:'wrong'},
+      {text:"Den PC mit Snacks motivieren.", type:'funny'}],
+    info:"⚙️ Erst einfache Software‑Checks (Updates, Neustart)." },
+
+  { q:"Eine Kollegin sagt: „Ich kann keine E‑Mails mehr senden oder empfangen.“",
+    answers:[
+      {text:"Internet, Speicherplatz und Postfachgröße prüfen.", type:'correct'},
+      {text:"Alle Mails löschen – ohne zu prüfen.", type:'wrong'},
+      {text:"Mehr Drucker kaufen – für E‑Mails.", type:'funny'}],
+    info:"📧 Meist sind Verbindung oder Speicher voll – zuerst prüfen." },
+
+  { q:"Maus oder Tastatur reagieren plötzlich nicht mehr.",
+    answers:[
+      {text:"Batterie/Kabel prüfen, anderen USB‑Port testen.", type:'correct'},
+      {text:"Einmal kräftig pusten – das hilft sicher.", type:'wrong'},
+      {text:"Die Maus mit Käse locken.", type:'funny'}],
+    info:"🖱️ Peripherie: Strom/Kabel/Port zuerst prüfen." },
+
+  { q:"Der Monitor flackert oder wird kurz schwarz.",
+    answers:[
+      {text:"Kabel prüfen, anderen Monitor testen, Grafik‑Einstellungen checken.", type:'correct'},
+      {text:"Helligkeit maximal – hilft bestimmt.", type:'wrong'},
+      {text:"Dem Monitor zuzwinkern.", type:'funny'}],
+    info:"🖥️ Ursache oft Kabel/Hardware – logisch eingrenzen." },
+
+  { q:"Der Mitarbeiter sagt: „Ich komme nicht ins Internet. Webseiten laden nicht.“",
+    answers:[
+      {text:"LAN/WLAN prüfen, Router testen, IP‑Einstellungen ansehen.", type:'correct'},
+      {text:"Sofort neuen Router kaufen.", type:'wrong'},
+      {text:"Internet mit Magneten anziehen.", type:'funny'}],
+    info:"🌐 Erst lokal prüfen, dann das Netzwerk." },
+
+  { q:"Es ist kein Ton zu hören – egal ob Video oder Musik.",
+    answers:[
+      {text:"Lautstärke, Ausgabegerät, Kabel/Bluetooth prüfen.", type:'correct'},
+      {text:"Kopfhörer zerschneiden – sicher ist sicher.", type:'wrong'},
+      {text:"Den Laptop anschmunzeln.", type:'funny'}],
+    info:"🔊 Häufig ist das falsche Ausgabegerät gewählt." }
+];
+let si_questions=[], si_state={ i:0, points:0, started:false };
+function start_si(){
+  si_questions = shuffle([...si_pool]).slice(0,6);
+  si_state = { i:0, points:0, started:true };
+  update_si_progress();
+  document.getElementById('si_score').innerText='Punkte: 0';
+  render_si();
+}
+function resetGame(which){
+  if(which==='si'){ si_state.started=false; start_si(); }
+  if(which==='ae'){ ae_state.started=false; start_ae(); }
+  if(which==='dm'){ dm_state.started=false; start_dm(); }
+}
+function render_si(){
+  const s = si_questions[si_state.i];
+  if(!s){ return end_si(); }
+  update_si_progress();
+  document.getElementById('si_q').innerText = s.q;
+  document.getElementById('si_info').innerText = '';
+
+  const opts = shuffle(s.answers.map(a => ({text:a.text, ok:a.type==='correct'})));
+  const ids = ['si_opt1','si_opt2','si_opt3'];
+  ids.forEach((id,idx)=>{
+    const b=document.getElementById(id);
+    b.style.display='block';
+    b.disabled=false;
+    b.classList.remove('is-correct','is-wrong','is-dim');
+    b.innerText = opts[idx].text;
+    b.dataset.ok = opts[idx].ok ? '1':'0';
+    b.onclick = () => choose_with_feedback(ids, idx, s.info, 'si');
+  });
+}
+function choose_with_feedback(btnIds, clickedIdx, info, who){
+  // Subtiles Feedback
+  btnIds.forEach((id, i)=>{
+    const b = document.getElementById(id);
+    b.disabled = true;
+    const ok = b.dataset.ok === '1';
+    if(i===clickedIdx){ b.classList.add(ok ? 'is-correct' : 'is-wrong'); }
+    else{
+      b.classList.add('is-dim');
+      if(ok) b.classList.add('is-correct');
+    }
+  });
+  document.getElementById(`${who}_info`).innerText = info;
+  const clicked = document.getElementById(btnIds[clickedIdx]);
+  if(clicked.dataset.ok === '1'){ si_state.points++; }
+  document.getElementById('si_score').innerText = 'Punkte: ' + si_state.points;
+  si_state.i++;
+  setTimeout(render_si, 1100);
+}
+function end_si(){
+  const total = si_questions.length;
+  document.getElementById('si_prog').style.width = '100%';
+  document.getElementById('si_prog_label').innerText = `Fertig (${total}/${total})`;
+  const msg = si_state.points >= 4 ? '🚀 Guter Support‑Gedanke!' : '🙂 Solider Anfang!';
+  document.getElementById('si_q').innerHTML = `${msg}<br>Du hast <b>${si_state.points}/${total}</b> Punkten erreicht.`;
+
+  const b1 = document.getElementById('si_opt1');
+  const b2 = document.getElementById('si_opt2');
+  const b3 = document.getElementById('si_opt3');
+  [b1,b2,b3].forEach(b=>{ b.classList.remove('is-correct','is-wrong','is-dim'); b.disabled=false; });
+  b1.innerText='🔄 Nochmal spielen'; b1.onclick=()=>resetGame('si');
+  b2.innerText='🏠 Zurück zur Auswahl'; b2.onclick=()=>showSection('home');
+  b3.style.display='none';
+
+  document.getElementById('si_info').innerText = 'IT‑Support: erst einfache Checks, dann weiter prüfen.';
+}
+function update_si_progress(){
+  const total = 6, cur = si_state.i;
+  const pct = Math.max(0, Math.min(100, (cur/total)*100));
+  document.getElementById('si_prog').style.width = pct + '%';
+  document.getElementById('si_prog_label').innerText = `Frage ${cur+1}/${total}`;
+}
+
+/* =========================
+   GAME 2: Anwendungsentwicklung
+   (10 Fragen – 6 zufällig)
+   ========================= */
+const ae_pool = [
+  { q:"Ein Button wird geklickt – aber die App reagiert nicht.",
+    answers:[
+      {text:"Prüfen, ob die Ereignis‑Funktion wirklich ausgelöst wird.", type:'correct'},
+      {text:"Alles neu programmieren – ohne zu testen.", type:'wrong'},
+      {text:"Kurz Pause, dann nochmal probieren.", type:'funny'}],
+    info:"🧠 Erst checken: Wird der Code überhaupt ausgeführt?" },
+
+  { q:"Du sollst einen Login bauen. Was ist der erste sinnvolle Schritt?",
+    answers:[
+      {text:"Logik planen: Eingabe → Prüfung → Ergebnis.", type:'correct'},
+      {text:"Ohne Plan losprogrammieren.", type:'wrong'},
+      {text:"Erst das Logo animieren.", type:'funny'}],
+    info:"📋 Planung spart Zeit und Fehler." },
+
+  { q:"Wenn das Textfeld leer bleibt, stürzt die App direkt ab.",
+    answers:[
+      {text:"Eingaben prüfen und eine klare Fehlermeldung anzeigen.", type:'correct'},
+      {text:"Fehler ignorieren – passiert halt.", type:'wrong'},
+      {text:"Leere Felder bunt färben.", type:'funny'}],
+    info:"✅ Eingaben validieren = Standard." },
+
+  { q:"Du schreibst eine Funktion, die etwas berechnet.",
+    answers:[
+      {text:"Klare Funktion schreiben und sinnvoll benennen.", type:'correct'},
+      {text:"Name „abc123“, Logik verstreuen.", type:'wrong'},
+      {text:"Funktion „megaTurbo()“ nennen.", type:'funny'}],
+    info:"🔧 Saubere Funktionen = verständlicher Code." },
+
+  { q:"Ein Teil der App reagiert sehr langsam. Nutzer beschweren sich.",
+    answers:[
+      {text:"Messen (Profiling) und gezielt optimieren.", type:'correct'},
+      {text:"Alles neu schreiben ohne Grund.", type:'wrong'},
+      {text:"Schriftart wechseln – vielleicht schneller.", type:'funny'}],
+    info:"📈 Erst messen, dann verbessern." },
+
+  { q:"Ein Nutzer schreibt: „Ich habe einen Fehler gefunden.“",
+    answers:[
+      {text:"Fehler reproduzieren und Ursache suchen.", type:'correct'},
+      {text:"Direkt schließen: „Kein Bug“. ", type:'wrong'},
+      {text:"Screenshot erbitten und freundlich bleiben.", type:'funny'}],
+    info:"🐞 Debugging: Reproduzieren → Analysieren → Fix." },
+
+  { q:"Eine Eingabe soll gespeichert werden – aber nur gültige Werte.",
+    answers:[
+      {text:"Eingaben prüfen und nur gültige Daten speichern.", type:'correct'},
+      {text:"Alles speichern – egal was.", type:'wrong'},
+      {text:"Speichern mit Konfetti feiern.", type:'funny'}],
+    info:"💾 Validierung vor Speichern ist wichtig." },
+
+  { q:"Es wird eine Fehlermeldung für Nutzer gebraucht.",
+    answers:[
+      {text:"Kurze, klare Meldung („Bitte Text eingeben“).", type:'correct'},
+      {text:"Kryptischen Entwickler‑Fehler anzeigen.", type:'wrong'},
+      {text:"Freundliche Sprechblase – aber verständlich.", type:'funny'}],
+    info:"🗣️ Gute Meldungen helfen Nutzern." },
+
+  { q:"Ein neues Software‑Projekt startet.",
+    answers:[
+      {text:"Ziele & Anforderungen kurz dokumentieren.", type:'correct'},
+      {text:"Einfach irgendwas bauen.", type:'wrong'},
+      {text:"Nur die Farben festlegen.", type:'funny'}],
+    info:"🎯 Erst verstehen, dann bauen." },
+
+  { q:"Dein Team soll deinen Code später nutzen können.",
+    answers:[
+      {text:"Code ordentlich und verständlich schreiben.", type:'correct'},
+      {text:"Nur ich verstehe den Code – egal.", type:'wrong'},
+      {text:"Lustige Kommentare (aber sinnvoll).", type:'funny'}],
+    info:"👥 Sauberer Code hilft dem Team." }
+];
+let ae_questions=[], ae_state={ i:0, points:0, started:false };
+function start_ae(){
+  ae_questions = shuffle([...ae_pool]).slice(0,6);
+  ae_state = { i:0, points:0, started:true };
+  update_ae_progress();
+  document.getElementById('ae_score').innerText='Punkte: 0';
+  render_ae();
+}
+function render_ae(){
+  const s = ae_questions[ae_state.i];
+  if(!s){ return end_ae(); }
+  update_ae_progress();
+  document.getElementById('ae_q').innerText = s.q;
+  document.getElementById('ae_info').innerText = '';
+  const opts = shuffle(s.answers.map(a => ({text:a.text, ok:a.type==='correct'})));
+  const ids = ['ae_opt1','ae_opt2','ae_opt3'];
+  ids.forEach((id,idx)=>{
+    const b=document.getElementById(id);
+    b.style.display='block';
+    b.disabled=false;
+    b.classList.remove('is-correct','is-wrong','is-dim');
+    b.innerText = opts[idx].text;
+    b.dataset.ok = opts[idx].ok ? '1':'0';
+    b.onclick = () => choose_with_feedback(ids, idx, s.info, 'ae');
+  });
+}
+function end_ae(){
+  const total = ae_questions.length;
+  document.getElementById('ae_prog').style.width = '100%';
+  document.getElementById('ae_prog_label').innerText = `Fertig (${total}/${total})`;
+  const msg = ae_state.points >= 4 ? '🚀 Du denkst wie ein Entwickler!' : '🙂 Guter Anfang!';
+  document.getElementById('ae_q').innerHTML = `${msg}<br>Du hast <b>${ae_state.points}/${total}</b> Punkten erreicht.`;
+
+  const b1 = document.getElementById('ae_opt1');
+  const b2 = document.getElementById('ae_opt2');
+  const b3 = document.getElementById('ae_opt3');
+  [b1,b2,b3].forEach(b=>{ b.classList.remove('is-correct','is-wrong','is-dim'); b.disabled=false; });
+  b1.innerText='🔄 Nochmal spielen'; b1.onclick=()=>resetGame('ae');
+  b2.innerText='🏠 Zurück zur Auswahl'; b2.onclick=()=>showSection('home');
+  b3.style.display='none';
+
+  document.getElementById('ae_info').innerText = 'Entwickler: planen Logik, testen Fehler, verbessern gezielt.';
+}
+function update_ae_progress(){
+  const total = 6, cur = ae_state.i;
+  const pct = Math.max(0, Math.min(100, (cur/total)*100));
+  document.getElementById('ae_prog').style.width = pct + '%';
+  document.getElementById('ae_prog_label').innerText = `Frage ${cur+1}/${total}`;
+}
+
+/* =========================
+   GAME 3: Digitalisierung
+   (10 Fragen – 6 zufällig)
+   ========================= */
+const dm_pool = [
+  { q:"In einer Abteilung läuft alles noch mit Papierformularen. Nichts ist digital.",
+    answers:[
+      {text:"Prozesse anschauen, dann passende Software auswählen.", type:'correct'},
+      {text:"Sofort viele Programme installieren.", type:'wrong'},
+      {text:"Mehr Ordner kaufen – fast digital.", type:'funny'}],
+    info:"📋 Digitalisierung startet mit Prozess‑Blick." },
+
+  { q:"Dateien sind chaotisch verteilt: USB‑Sticks, Desktop, E‑Mails usw.",
+    answers:[
+      {text:"Gemeinsame Ablage/Cloud mit klarer Struktur einführen.", type:'correct'},
+      {text:"Jeder arbeitet weiter alleine.", type:'wrong'},
+      {text:"Dateien per Brieftaube verteilen.", type:'funny'}],
+    info:"📁 Einheitliche Ablage hilft allen." },
+
+  { q:"Kunden müssen Formulare herunterladen, ausdrucken, unterschreiben und zurückschicken.",
+    answers:[
+      {text:"Online‑Formular + digitale Unterschrift einführen.", type:'correct'},
+      {text:"Mehr Drucker kaufen.", type:'wrong'},
+      {text:"Das Faxgerät reaktivieren – retro.", type:'funny'}],
+    info:"✍️ Digital ersetzt Papier." },
+
+  { q:"Mitarbeiter haben Angst vor neuen digitalen Arbeitsweisen.",
+    answers:[
+      {text:"Kurz schulen und zeigen, wie es hilft.", type:'correct'},
+      {text:"Einfach ohne Erklärung durchdrücken.", type:'wrong'},
+      {text:"Sticker „Wir ♥ digital“ verteilen.", type:'funny'}],
+    info:"👥 Gute Kommunikation ist wichtig." },
+
+  { q:"Der Chef sagt: „Wir brauchen überall KI!“ – aber ohne klares Ziel.",
+    answers:[
+      {text:"Kleines Projekt mit klarer Aufgabe testen.", type:'correct'},
+      {text:"Alles sofort umstellen, egal wie.", type:'wrong'},
+      {text:"Die Kantine von KI planen lassen.", type:'funny'}],
+    info:"🎯 Pilotprojekt statt Hype." },
+
+  { q:"Rechnungen kommen per Post und werden manuell abgetippt.",
+    answers:[
+      {text:"Scan + automatische Erkennung + Freigabeprozess.", type:'correct'},
+      {text:"Alle schneller tippen lassen.", type:'wrong'},
+      {text:"In Schönschrift abschreiben.", type:'funny'}],
+    info:"🧾 Digitale Workflows sparen Zeit & Fehler." },
+
+  { q:"Termine werden mit Post‑its und Papierlisten geplant.",
+    answers:[
+      {text:"Gemeinsamen Online‑Kalender einführen.", type:'correct'},
+      {text:"Zettel farbig markieren – reicht.", type:'wrong'},
+      {text:"Termine auf Papierfliegern verschicken.", type:'funny'}],
+    info:"📅 Digitaler Kalender = weniger Chaos." },
+
+  { q:"Wissen liegt verteilt in vielen Word‑Dokumenten – keiner findet etwas.",
+    answers:[
+      {text:"Wissensdatenbank (z. B. SharePoint) nutzen.", type:'correct'},
+      {text:"Alles per E‑Mail verteilen.", type:'wrong'},
+      {text:"In Geheimschrift speichern.", type:'funny'}],
+    info:"📚 Zentraler Wissensort hilft allen." },
+
+  { q:"Dokumente müssen von mehreren Personen freigegeben werden – das dauert ewig.",
+    answers:[
+      {text:"Digitalen Freigabe‑Workflow aufsetzen.", type:'correct'},
+      {text:"Alle Freigaben abschaffen.", type:'wrong'},
+      {text:"Freigaben per Würfel entscheiden.", type:'funny'}],
+    info:"✅ Workflows beschleunigen Abläufe." },
+
+  { q:"Eine neue Software soll eingeführt werden. Viele sind unsicher.",
+    answers:[
+      {text:"Klein starten (Pilot) + Feedback sammeln.", type:'correct'},
+      {text:"Alle sofort zwingen – fertig.", type:'wrong'},
+      {text:"Software im Lostopf ziehen.", type:'funny'}],
+    info:"🧪 Pilot + Feedback = gute Einführung." }
+];
+let dm_questions=[], dm_state={ i:0, points:0, started:false };
+function start_dm(){
+  dm_questions = shuffle([...dm_pool]).slice(0,6);
+  dm_state = { i:0, points:0, started:true };
+  update_dm_progress();
+  document.getElementById('dm_score').innerText='Punkte: 0';
+  render_dm();
+}
+function render_dm(){
+  const s = dm_questions[dm_state.i];
+  if(!s){ return end_dm(); }
+  update_dm_progress();
+  document.getElementById('dm_q').innerText = s.q;
+  document.getElementById('dm_info').innerText = '';
+  const opts = shuffle(s.answers.map(a => ({text:a.text, ok:a.type==='correct'})));
+  const ids = ['dm_opt1','dm_opt2','dm_opt3'];
+  ids.forEach((id,idx)=>{
+    const b=document.getElementById(id);
+    b.style.display='block';
+    b.disabled=false;
+    b.classList.remove('is-correct','is-wrong','is-dim');
+    b.innerText = opts[idx].text;
+    b.dataset.ok = opts[idx].ok ? '1':'0';
+    b.onclick = () => choose_with_feedback(ids, idx, s.info, 'dm');
+  });
+}
+function end_dm(){
+  const total = dm_questions.length;
+  document.getElementById('dm_prog').style.width = '100%';
+  document.getElementById('dm_prog_label').innerText = `Fertig (${total}/${total})`;
+  const msg = dm_state.points >= 4 ? '🚀 Du denkst wie ein Digitalisierer!' : '🙂 Gut gemacht!';
+  document.getElementById('dm_q').innerHTML = `${msg}<br>Du hast <b>${dm_state.points}/${total}</b> Punkten erreicht.`;
+
+  const b1 = document.getElementById('dm_opt1');
+  const b2 = document.getElementById('dm_opt2');
+  const b3 = document.getElementById('dm_opt3');
+  [b1,b2,b3].forEach(b=>{ b.classList.remove('is-correct','is-wrong','is-dim'); b.disabled=false; });
+  b1.innerText='🔄 Nochmal spielen'; b1.onclick=()=>resetGame('dm');
+  b2.innerText='🏠 Zurück zur Auswahl'; b2.onclick=()=>showSection('home');
+  b3.style.display='none';
+
+  document.getElementById('dm_info').innerText = 'Digitalisierung: Prozesse verstehen, sinnvoll verbessern, Menschen mitnehmen.';
+}
+function update_dm_progress(){
+  const total = 6, cur = dm_state.i;
+  const pct = Math.max(0, Math.min(100, (cur/total)*100));
+  document.getElementById('dm_prog').style.width = pct + '%';
+  document.getElementById('dm_prog_label').innerText = `Frage ${cur+1}/${total}`;
+}
+</script>
+</body>
+</html>
