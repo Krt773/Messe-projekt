@@ -26,9 +26,7 @@
 
 /* ======== GLOBAL ======== */
 
-* {
-  box-sizing:border-box;
-}
+* { box-sizing:border-box; }
 
 body{
   margin:0;
@@ -36,9 +34,9 @@ body{
   color:var(--text);
 
   /* Hintergrundbild */
-  background: 
+  background:
     linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.55)),
-    url('Plattling_5.png') no-repeat center/cover;
+    url('background.png') no-repeat center/cover;
 
   min-height:100vh;
   display:flex;
@@ -64,56 +62,28 @@ body{
   backdrop-filter:blur(4px);
 }
 
-.brand{
-  display:flex;
-  align-items:center;
-  gap:14px;
-}
-
-.brand .logo{
-  width:130px;
-}
-
-.brand .title{
-  font-weight:800;
-  font-size:20px;
-  letter-spacing:.2px;
-}
+.brand{ display:flex; align-items:center; gap:14px; }
+.brand .logo{ width:130px; }
+.brand .title{ font-weight:800; font-size:20px; letter-spacing:.2px; }
 
 /* ======== TOP NAVIGATION ======== */
 
 .nav{
-  display:flex;
-  gap:10px;
+  display:flex; gap:10px;
   background:rgba(255,255,255,.10);
   border:1px solid var(--line);
-  border-radius:14px;
-  padding:6px;
+  border-radius:14px; padding:6px;
 }
 
 .seg{
-  appearance:none;
-  border:none;
-  cursor:pointer;
-  padding:10px 16px;
-  border-radius:10px;
-  font-weight:800;
-  font-size:14px;
-  background:transparent;
-  color:white;
-  min-width:160px;
-  transition:.15s;
+  appearance:none; border:none; cursor:pointer;
+  padding:10px 16px; border-radius:10px;
+  font-weight:800; font-size:14px;
+  background:transparent; color:white;
+  min-width:160px; transition:.15s;
 }
-
-.seg.home{
-  min-width:120px;
-}
-
-.seg:hover{
-  transform:translateY(-1px);
-  filter:brightness(1.1);
-}
-
+.seg.home{ min-width:120px; }
+.seg:hover{ transform:translateY(-1px); filter:brightness(1.1); }
 .seg.active{
   background:linear-gradient(135deg, var(--brand1), rgba(0,183,243,.55));
   box-shadow:0 8px 22px rgba(0,183,243,.35);
@@ -125,22 +95,12 @@ body{
   background:rgba(52,52,51,.78);
   border:1px solid var(--line);
   border-radius:var(--radius);
-  padding:20px;
-  margin-top:12px;
-  box-shadow:var(--shadow);
-  backdrop-filter:blur(4px);
+  padding:20px; margin-top:12px;
+  box-shadow:var(--shadow); backdrop-filter:blur(4px);
 }
 
-h2{
-  margin:0 0 8px;
-  font-size:22px;
-}
-
-.p{
-  color:var(--muted);
-  margin:4px 0 14px;
-  font-size:15px;
-}
+h2{ margin:0 0 8px; font-size:22px; }
+.p{ color:var(--muted); margin:4px 0 14px; font-size:15px; }
 
 /* ======== GRID ======== */
 
@@ -158,20 +118,9 @@ h2{
   cursor:pointer;
   transition:.15s;
 }
-
-.tile:hover{
-  transform:translateY(-2px);
-  filter:brightness(1.1);
-}
-
-.tile h3{
-  margin:0 0 6px;
-}
-
-.tile .desc{
-  color:var(--muted);
-  font-size:13px;
-}
+.tile:hover{ transform:translateY(-2px); filter:brightness(1.1); }
+.tile h3{ margin:0 0 6px; }
+.tile .desc{ color:var(--muted); font-size:13px; }
 
 /* ====== QUESTION AREA ====== */
 
@@ -183,56 +132,31 @@ h2{
   box-shadow:inset 0 0 0 1px rgba(0,0,0,.3);
   backdrop-filter: blur(3px);
 }
-
 .question{
-  font-size:20px;
-  font-weight:800;
-  text-align:center;
-  margin-bottom:12px;
+  font-size:20px; font-weight:800; text-align:center; margin-bottom:12px;
 }
 
 /* ====== PROGRESS BAR ====== */
 
-.progressWrap{
-  display:flex; align-items:center; gap:12px; margin-bottom:10px;
-}
-
+.progressWrap{ display:flex; align-items:center; gap:12px; margin-bottom:10px; }
 .progressBar{
-  flex:1;
-  background:rgba(255,255,255,.08);
+  flex:1; background:rgba(255,255,255,.08);
   border:1px solid var(--line);
-  height:10px;
-  border-radius:999px;
-  overflow:hidden;
+  height:10px; border-radius:999px; overflow:hidden;
 }
-
 .progressFill{
   background:linear-gradient(90deg, var(--brand1), var(--brand2));
-  height:100%;
-  width:0%;
-  transition:.3s;
+  height:100%; width:0%; transition:.3s;
 }
-
-.progressLabel{
-  font-size:12px;
-  color:var(--muted);
-}
+.progressLabel{ font-size:12px; color:var(--muted); }
 
 /* ====== ANSWER BUTTONS ====== */
 
 .btn{
-  width:100%;
-  padding:18px;
-  border:none;
-  border-radius:14px;
-  font-size:16px;
-  font-weight:800;
-  cursor:pointer;
-  margin:10px 0;
-  color:white;
-  transition:.15s;
+  width:100%; padding:18px; border:none; border-radius:14px;
+  font-size:16px; font-weight:800; cursor:pointer; margin:10px 0;
+  color:white; transition:.15s;
 }
-
 .btn:hover{ filter:brightness(1.1); }
 
 .btn.si{ background:linear-gradient(135deg,#007aff,#0048b3); }
@@ -240,54 +164,30 @@ h2{
 .btn.dm{ background:linear-gradient(135deg,#10b981,#0e8f66); }
 
 /* Richtig/falsch Feedback */
-.btn.is-correct{
-  outline:2px solid rgba(35,212,161,.55);
-}
-.btn.is-wrong{
-  outline:2px solid rgba(255,77,77,.35);
-  opacity:.85;
-}
-.btn.is-dim{
-  opacity:.55;
-}
+.btn.is-correct{ outline:2px solid rgba(35,212,161,.55); }
+.btn.is-wrong{ outline:2px solid rgba(255,77,77,.35); opacity:.85; }
+.btn.is-dim{ opacity:.55; }
 
 /* Info */
 .info{
   background:rgba(255,255,255,.08);
   border:1px dashed var(--line);
-  border-radius:10px;
-  padding:12px;
-  font-size:14px;
-  color:white;
-  margin-top:10px;
+  border-radius:10px; padding:12px;
+  font-size:14px; color:white; margin-top:10px;
 }
 
 /* Bottom buttons */
-.actions{
-  display:flex;
-  gap:8px;
-  margin-top:12px;
-}
-
+.actions{ display:flex; gap:8px; margin-top:12px; }
 .actionBtn{
-  padding:10px 14px;
-  background:rgba(255,255,255,.10);
-  border-radius:12px;
-  border:1px solid var(--line);
-  cursor:pointer;
-  font-weight:800;
-  color:white;
+  padding:10px 14px; background:rgba(255,255,255,.10);
+  border-radius:12px; border:1px solid var(--line);
+  cursor:pointer; font-weight:800; color:white;
 }
-
-.actionBtn:hover{
-  transform:translateY(-1px);
-  filter:brightness(1.1);
-}
+.actionBtn:hover{ transform:translateY(-1px); filter:brightness(1.1); }
 
 /* Hide sections */
 .section{ display:none; }
 .section.active{ display:block; }
-
 </style>
 </head>
 <body>
@@ -309,35 +209,105 @@ h2{
     </div>
   </div>
 
-<!-- HOME -->
-<section id="home" class="section active">
-  <div class="card">
-    <h2>Wähle ein Spiel</h2>
-    <div class="p">
-      Pro Runde <b>6 zufällige Fragen</b> (aus 10).  
-      Jede Frage hat eine <b>richtige</b>, eine <b>falsche</b> und eine <b>lustige</b> Antwort.
-    </div>
+  <!-- HOME -->
+  <section id="home" class="section active">
+    <div class="card">
+      <h2>Wähle ein Spiel</h2>
+      <div class="p">
+        Pro Runde <b>6 zufällige Fragen</b> (aus 10).<br/>
+        Jede Frage hat eine <b>richtige</b>, eine <b>falsche</b> und eine <b>lustige</b> Antwort.
+      </div>
 
-    <div class="grid">
-      <div class="tile" onclick="showSection('si')">
-        <h3>🖥️ IT‑Support (Systemintegration)</h3>
-        <div class="desc">Löse echte Support‑Situationen.</div>
-      </div>
-      <div class="tile" onclick="showSection('ae')">
-        <h3>💻 Anwendungsentwicklung</h3>
-        <div class="desc">Denke wie ein Entwickler – ohne Programmieren.</div>
-      </div>
-      <div class="tile" onclick="showSection('dm')">
-        <h3>📊 Digitalisierung</h3>
-        <div class="desc">Finde die beste digitale Lösung.</div>
+      <div class="grid">
+        <div class="tile" onclick="showSection('si')">
+          <h3>🖥️ IT‑Support (Systemintegration)</h3>
+          <div class="desc">Löse echte Support‑Situationen.</div>
+        </div>
+        <div class="tile" onclick="showSection('ae')">
+          <h3>💻 Anwendungsentwicklung</h3>
+          <div class="desc">Denke wie ein Entwickler – ohne Programmieren.</div>
+        </div>
+        <div class="tile" onclick="showSection('dm')">
+          <h3>📊 Digitalisierung</h3>
+          <div class="desc">Finde die beste digitale Lösung.</div>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ========================================== -->
-<!-- ============ GAME FUNCTIONS ============== -->
-<!-- ========================================== -->
+  <!-- ==================== SI GAME ==================== -->
+  <section id="si" class="section">
+    <div class="card">
+      <div class="progressWrap">
+        <div class="progressBar"><div id="si_prog" class="progressFill"></div></div>
+        <div id="si_prog_label" class="progressLabel">Frage 1/6</div>
+        <div id="si_score" class="progressLabel">Punkte: 0</div>
+      </div>
+
+      <div class="paper">
+        <div id="si_q" class="question"></div>
+        <button id="si_opt1" class="btn si"></button>
+        <button id="si_opt2" class="btn si"></button>
+        <button id="si_opt3" class="btn si"></button>
+        <div id="si_info" class="info"></div>
+      </div>
+
+      <div class="actions">
+        <button class="actionBtn" onclick="resetGame('si')">🔄 Neu</button>
+        <button class="actionBtn" onclick="showSection('home')">🏠 Start</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== AE GAME ==================== -->
+  <section id="ae" class="section">
+    <div class="card">
+      <div class="progressWrap">
+        <div class="progressBar"><div id="ae_prog" class="progressFill"></div></div>
+        <div id="ae_prog_label" class="progressLabel">Frage 1/6</div>
+        <div id="ae_score" class="progressLabel">Punkte: 0</div>
+      </div>
+
+      <div class="paper">
+        <div id="ae_q" class="question"></div>
+        <button id="ae_opt1" class="btn ae"></button>
+        <button id="ae_opt2" class="btn ae"></button>
+        <button id="ae_opt3" class="btn ae"></button>
+        <div id="ae_info" class="info"></div>
+      </div>
+
+      <div class="actions">
+        <button class="actionBtn" onclick="resetGame('ae')">🔄 Neu</button>
+        <button class="actionBtn" onclick="showSection('home')">🏠 Start</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== DM GAME ==================== -->
+  <section id="dm" class="section">
+    <div class="card">
+      <div class="progressWrap">
+        <div class="progressBar"><div id="dm_prog" class="progressFill"></div></div>
+        <div id="dm_prog_label" class="progressLabel">Frage 1/6</div>
+        <div id="dm_score" class="progressLabel">Punkte: 0</div>
+      </div>
+
+      <div class="paper">
+        <div id="dm_q" class="question"></div>
+        <button id="dm_opt1" class="btn dm"></button>
+        <button id="dm_opt2" class="btn dm"></button>
+        <button id="dm_opt3" class="btn dm"></button>
+        <div id="dm_info" class="info"></div>
+      </div>
+
+      <div class="actions">
+        <button class="actionBtn" onclick="resetGame('dm')">🔄 Neu</button>
+        <button class="actionBtn" onclick="showSection('home')">🏠 Start</button>
+      </div>
+    </div>
+  </section>
+
+</div>
 
 <script>
 /* ----- Navigation ----- */
@@ -349,9 +319,9 @@ function showSection(id){
     b.classList.toggle('active', b.dataset.target===id);
   });
 
-  if(id==='si'&&!si_state.started) start_si();
-  if(id==='ae'&&!ae_state.started) start_ae();
-  if(id==='dm'&&!dm_state.started) start_dm();
+  if(id==='si' && !si_state.started) start_si();
+  if(id==='ae' && !ae_state.started) start_ae();
+  if(id==='dm' && !dm_state.started) start_dm();
 }
 
 /* ----- Helper ----- */
@@ -447,24 +417,24 @@ const si_pool=[
     info:"🔊 Häufig falsches Gerät ausgewählt."},
 ];
 
-let si_questions=[], si_state={i:0,points:0,started:false};
+let si_questions=[], si_state={i:0,points:0,started:false,total:6};
 
 function start_si(){
-  si_state={i:0,points:0,started:true};
-  si_questions=shuffle([...si_pool]).slice(0,6);
+  si_state={i:0,points:0,started:true,total:Math.min(6, si_pool.length)};
+  si_questions=shuffle([...si_pool]).slice(0,si_state.total);
   render_si();
   update_si_progress();
   document.getElementById('si_score').innerText="Punkte: 0";
 }
 
 function update_si_progress(){
-  const pct=(si_state.i/6)*100;
+  const pct=(si_state.i/si_state.total)*100;
   document.getElementById('si_prog').style.width=pct+"%";
-  document.getElementById('si_prog_label').innerText=`Frage ${si_state.i+1}/6`;
+  document.getElementById('si_prog_label').innerText=`Frage ${Math.min(si_state.i+1,si_state.total)}/${si_state.total}`;
 }
 
 function render_si(){
-  if(si_state.i>=6) return end_si();
+  if(si_state.i>=si_state.total) return end_si();
   const s=si_questions[si_state.i];
   document.getElementById('si_q').innerText=s.q;
   document.getElementById('si_info').innerText="";
@@ -484,8 +454,8 @@ function render_si(){
 function end_si(){
   document.getElementById('si_prog').style.width='100%';
   document.getElementById('si_prog_label').innerText="Fertig";
-  const msg=si_state.points>=4?"🚀 Guter Support‑Gedanke!":"🙂 Solider Anfang!";
-  document.getElementById('si_q').innerHTML=`${msg}<br>Du hast <b>${si_state.points}/6</b> Punkten erreicht.`;
+  const msg=si_state.points>=Math.ceil(si_state.total*0.67)?"🚀 Guter Support‑Gedanke!":"🙂 Solider Anfang!";
+  document.getElementById('si_q').innerHTML=`${msg}<br>Du hast <b>${si_state.points}/${si_state.total}</b> Punkten erreicht.`;
   const b1=document.getElementById('si_opt1');
   const b2=document.getElementById('si_opt2');
   const b3=document.getElementById('si_opt3');
@@ -523,24 +493,24 @@ const ae_pool=[  /* (Fragen wie zuvor im korrigierten Code, hier verkürzt gehal
     info:"👥 Verständlicher Code ist Teamarbeit."},
 ];
 
-let ae_questions=[], ae_state={i:0,points:0,started:false};
+let ae_questions=[], ae_state={i:0,points:0,started:false,total:6};
 
 function start_ae(){
-  ae_state={i:0,points:0,started:true};
-  ae_questions=shuffle([...ae_pool]).slice(0,6);
+  ae_state={i:0,points:0,started:true,total:Math.min(6, ae_pool.length)};
+  ae_questions=shuffle([...ae_pool]).slice(0,ae_state.total);
   render_ae();
   update_ae_progress();
   document.getElementById('ae_score').innerText="Punkte: 0";
 }
 
 function update_ae_progress(){
-  const pct=(ae_state.i/6)*100;
+  const pct=(ae_state.i/ae_state.total)*100;
   document.getElementById('ae_prog').style.width=pct+"%";
-  document.getElementById('ae_prog_label').innerText=`Frage ${ae_state.i+1}/6`;
+  document.getElementById('ae_prog_label').innerText=`Frage ${Math.min(ae_state.i+1,ae_state.total)}/${ae_state.total}`;
 }
 
 function render_ae(){
-  if(ae_state.i>=6) return end_ae();
+  if(ae_state.i>=ae_state.total) return end_ae();
   const s=ae_questions[ae_state.i];
   document.getElementById('ae_q').innerText=s.q;
   document.getElementById('ae_info').innerText="";
@@ -560,8 +530,8 @@ function render_ae(){
 function end_ae(){
   document.getElementById('ae_prog').style.width='100%';
   document.getElementById('ae_prog_label').innerText="Fertig";
-  const msg=ae_state.points>=4?"🚀 Du denkst wie ein Entwickler!":"🙂 Guter Anfang!";
-  document.getElementById('ae_q').innerHTML=`${msg}<br>Du hast <b>${ae_state.points}/6</b> Punkten erreicht.`;
+  const msg=ae_state.points>=Math.ceil(ae_state.total*0.67)?"🚀 Du denkst wie ein Entwickler!":"🙂 Guter Anfang!";
+  document.getElementById('ae_q').innerHTML=`${msg}<br>Du hast <b>${ae_state.points}/${ae_state.total}</b> Punkten erreicht.`;
 
   const b1=document.getElementById('ae_opt1');
   const b2=document.getElementById('ae_opt2');
@@ -593,24 +563,24 @@ const dm_pool=[
     info:"🧪 Pilot + Feedback = Erfolg."},
 ];
 
-let dm_questions=[], dm_state={i:0,points:0,started:false};
+let dm_questions=[], dm_state={i:0,points:0,started:false,total:6};
 
 function start_dm(){
-  dm_state={i:0,points:0,started:true};
-  dm_questions=shuffle([...dm_pool]).slice(0,6);
+  dm_state={i:0,points:0,started:true,total:Math.min(6, dm_pool.length)};
+  dm_questions=shuffle([...dm_pool]).slice(0,dm_state.total);
   render_dm();
   update_dm_progress();
   document.getElementById('dm_score').innerText="Punkte: 0";
 }
 
 function update_dm_progress(){
-  const pct=(dm_state.i/6)*100;
+  const pct=(dm_state.i/dm_state.total)*100;
   document.getElementById('dm_prog').style.width=pct+"%";
-  document.getElementById('dm_prog_label').innerText=`Frage ${dm_state.i+1}/6`;
+  document.getElementById('dm_prog_label').innerText=`Frage ${Math.min(dm_state.i+1,dm_state.total)}/${dm_state.total}`;
 }
 
 function render_dm(){
-  if(dm_state.i>=6) return end_dm();
+  if(dm_state.i>=dm_state.total) return end_dm();
   const s=dm_questions[dm_state.i];
   document.getElementById('dm_q').innerText=s.q;
   document.getElementById('dm_info').innerText="";
@@ -631,8 +601,8 @@ function end_dm(){
   document.getElementById('dm_prog').style.width='100%';
   document.getElementById('dm_prog_label').innerText="Fertig";
 
-  const msg=dm_state.points>=4?"🚀 Du denkst wie ein Digitalisierer!":"🙂 Gut gemacht!";
-  document.getElementById('dm_q').innerHTML=`${msg}<br>Du hast <b>${dm_state.points}/6</b> Punkten erreicht.`;
+  const msg=dm_state.points>=Math.ceil(dm_state.total*0.67)?"🚀 Du denkst wie ein Digitalisierer!":"🙂 Gut gemacht!";
+  document.getElementById('dm_q').innerHTML=`${msg}<br>Du hast <b>${dm_state.points}/${dm_state.total}</b> Punkten erreicht.`;
 
   const b1=document.getElementById('dm_opt1');
   const b2=document.getElementById('dm_opt2');
@@ -646,6 +616,9 @@ function end_dm(){
 
 /* Reset */
 function resetGame(which){
+  const b3=document.getElementById(`${which}_opt3`);
+  if(b3 && b3.style.display==='none') b3.style.display='block';
+
   if(which==='si'){ si_state.started=false; start_si(); }
   if(which==='ae'){ ae_state.started=false; start_ae(); }
   if(which==='dm'){ dm_state.started=false; start_dm(); }
@@ -653,3 +626,4 @@ function resetGame(which){
 </script>
 </body>
 </html>
+``
