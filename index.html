@@ -456,11 +456,20 @@ function end_si(){
   document.getElementById('si_prog_label').innerText="Fertig";
   const msg=si_state.points>=Math.ceil(si_state.total*0.67)?"🚀 Guter Support‑Gedanke!":"🙂 Solider Anfang!";
   document.getElementById('si_q').innerHTML=`${msg}<br>Du hast <b>${si_state.points}/${si_state.total}</b> Punkten erreicht.`;
+
   const b1=document.getElementById('si_opt1');
   const b2=document.getElementById('si_opt2');
   const b3=document.getElementById('si_opt3');
+
+  // --- WICHTIG: Buttons wieder aktivieren + Klassen resetten ---
+  [b1,b2,b3].forEach(b=>{
+    b.disabled=false;
+    b.classList.remove('is-correct','is-wrong','is-dim');
+    b.style.display='block';
+  });
+
   b1.innerText="🔄 Nochmal spielen"; b1.onclick=()=>resetGame('si');
-  b2.innerText="🏠 Zurück"; b2.onclick=()=>showSection('home');
+  b2.innerText="🏠 Zurück";         b2.onclick=()=>showSection('home');
   b3.style.display='none';
 }
 
@@ -468,29 +477,67 @@ function end_si(){
 /* ========== AE GAME ========= */
 /* =========================== */
 
-const ae_pool=[  /* (Fragen wie zuvor im korrigierten Code, hier verkürzt gehalten) */
-  {q:"Ein Button wird geklickt – aber die App reagiert nicht.",
+const ae_pool = [
+  { q:"Ein Button wird geklickt – aber die App reagiert nicht.",
     answers:[
-      {text:"Prüfen, ob die Ereignis-Funktion ausgelöst wird.",type:'correct'},
-      {text:"Alles neu programmieren.",type:'wrong'},
-      {text:"Kurz Pause machen.",type:'funny'}],
-    info:"🧠 Erst prüfen: Wird der Code ausgeführt?"},
-
-  {q:"Du sollst einen Login programmieren. Was zuerst?",
+      {text:"Prüfen, ob die Ereignis‑Funktion wirklich ausgelöst wird.", type:'correct'},
+      {text:"Alles neu programmieren – ohne zu testen.", type:'wrong'},
+      {text:"Kurz Pause, dann nochmal probieren.", type:'funny'}],
+    info:"🧠 Erst checken: Wird der Code überhaupt ausgeführt?" },
+  { q:"Du sollst einen Login bauen. Was ist der erste sinnvolle Schritt?",
     answers:[
-      {text:"Planen: Eingabe → prüfen → Ergebnis.",type:'correct'},
-      {text:"Zufällig drauflos programmieren.",type:'wrong'},
-      {text:"Erst Animationen bauen.",type:'funny'}],
-    info:"📋 Planung hilft immer."},
-
-  /* … weitere 8 Fragen wie zuvor … */
-
-  {q:"Dein Team soll deinen Code verstehen.",
+      {text:"Logik planen: Eingabe → Prüfung → Ergebnis.", type:'correct'},
+      {text:"Ohne Plan losprogrammieren.", type:'wrong'},
+      {text:"Erst das Logo animieren.", type:'funny'}],
+    info:"📋 Planung spart Zeit und Fehler." },
+  { q:"Wenn das Textfeld leer bleibt, stürzt die App direkt ab.",
     answers:[
-      {text:"Klare Struktur & sinnvolle Namen.",type:'correct'},
-      {text:"Alles geheim halten.",type:'wrong'},
-      {text:"Reim-Kommentare schreiben.",type:'funny'}],
-    info:"👥 Verständlicher Code ist Teamarbeit."},
+      {text:"Eingaben prüfen und eine klare Fehlermeldung anzeigen.", type:'correct'},
+      {text:"Fehler ignorieren – passiert halt.", type:'wrong'},
+      {text:"Leere Felder bunt färben.", type:'funny'}],
+    info:"✅ Eingaben validieren = Standard." },
+  { q:"Du schreibst eine Funktion, die etwas berechnet.",
+    answers:[
+      {text:"Klare Funktion schreiben und sinnvoll benennen.", type:'correct'},
+      {text:"Name „abc123“, Logik verstreuen.", type:'wrong'},
+      {text:"Funktion „megaTurbo()“ nennen.", type:'funny'}],
+    info:"🔧 Saubere Funktionen = verständlicher Code." },
+  { q:"Ein Teil der App reagiert sehr langsam. Nutzer beschweren sich.",
+    answers:[
+      {text:"Messen (Profiling) und gezielt optimieren.", type:'correct'},
+      {text:"Alles neu schreiben ohne Grund.", type:'wrong'},
+      {text:"Schriftart wechseln – vielleicht schneller.", type:'funny'}],
+    info:"📈 Erst messen, dann verbessern." },
+  { q:"Ein Nutzer schreibt: „Ich habe einen Fehler gefunden.“",
+    answers:[
+      {text:"Fehler reproduzieren und Ursache suchen.", type:'correct'},
+      {text:"Direkt schließen: „Kein Bug“. ", type:'wrong'},
+      {text:"Screenshot erbitten und freundlich bleiben.", type:'funny'}],
+    info:"🐞 Debugging: Reproduzieren → Analysieren → Fix." },
+  { q:"Eine Eingabe soll gespeichert werden – aber nur gültige Werte.",
+    answers:[
+      {text:"Eingaben prüfen und nur gültige Daten speichern.", type:'correct'},
+      {text:"Alles speichern – egal was.", type:'wrong'},
+      {text:"Speichern mit Konfetti feiern.", type:'funny'}],
+    info:"💾 Validierung vor Speichern ist wichtig." },
+  { q:"Es wird eine Fehlermeldung für Nutzer gebraucht.",
+    answers:[
+      {text:"Kurze, klare Meldung („Bitte Text eingeben“).", type:'correct'},
+      {text:"Kryptischen Entwickler‑Fehler anzeigen.", type:'wrong'},
+      {text:"Freundliche Sprechblase – aber verständlich.", type:'funny'}],
+    info:"🗣️ Gute Meldungen helfen Nutzern." },
+  { q:"Ein neues Software‑Projekt startet.",
+    answers:[
+      {text:"Ziele & Anforderungen kurz dokumentieren.", type:'correct'},
+      {text:"Einfach irgendwas bauen.", type:'wrong'},
+      {text:"Nur die Farben festlegen.", type:'funny'}],
+    info:"🎯 Erst verstehen, dann bauen." },
+  { q:"Dein Team soll deinen Code später nutzen können.",
+    answers:[
+      {text:"Code ordentlich und verständlich schreiben.", type:'correct'},
+      {text:"Nur ich verstehe den Code – egal.", type:'wrong'},
+      {text:"Lustige Kommentare (aber sinnvoll).", type:'funny'}],
+    info:"👥 Sauberer Code hilft dem Team." }
 ];
 
 let ae_questions=[], ae_state={i:0,points:0,started:false,total:6};
@@ -536,8 +583,16 @@ function end_ae(){
   const b1=document.getElementById('ae_opt1');
   const b2=document.getElementById('ae_opt2');
   const b3=document.getElementById('ae_opt3');
+
+  // --- WICHTIG: Buttons wieder aktivieren + Klassen resetten ---
+  [b1,b2,b3].forEach(b=>{
+    b.disabled=false;
+    b.classList.remove('is-correct','is-wrong','is-dim');
+    b.style.display='block';
+  });
+
   b1.innerText="🔄 Nochmal spielen"; b1.onclick=()=>resetGame('ae');
-  b2.innerText="🏠 Zurück"; b2.onclick=()=>showSection('home');
+  b2.innerText="🏠 Zurück";         b2.onclick=()=>showSection('home');
   b3.style.display='none';
 }
 
@@ -545,22 +600,67 @@ function end_ae(){
 /* ========== DM GAME ========= */
 /* =========================== */
 
-const dm_pool=[
-  {q:"In einer Abteilung läuft alles noch mit Papierformularen.",
+const dm_pool = [
+  { q:"In einer Abteilung läuft alles noch mit Papierformularen. Nichts ist digital.",
     answers:[
-      {text:"Prozesse analysieren & passende Software wählen.",type:'correct'},
-      {text:"Einfach Software installieren.",type:'wrong'},
-      {text:"Mehr Ordner kaufen.",type:'funny'}],
-    info:"📋 Erst Prozesse verstehen."},
-
-  /* …weitere 9 Fragen wie im vorherigen Code… */
-
-  {q:"Neue Software soll eingeführt werden. Viele sind unsicher.",
+      {text:"Prozesse anschauen, dann passende Software auswählen.", type:'correct'},
+      {text:"Sofort viele Programme installieren.", type:'wrong'},
+      {text:"Mehr Ordner kaufen – fast digital.", type:'funny'}],
+    info:"📋 Digitalisierung startet mit Prozess‑Blick." },
+  { q:"Dateien sind chaotisch verteilt: USB‑Sticks, Desktop, E‑Mails usw.",
     answers:[
-      {text:"Mit kleinem Pilotprojekt starten.",type:'correct'},
-      {text:"Alle sofort zwingen.",type:'wrong'},
-      {text:"Software im Lostopf ziehen.",type:'funny'}],
-    info:"🧪 Pilot + Feedback = Erfolg."},
+      {text:"Gemeinsame Ablage/Cloud mit klarer Struktur einführen.", type:'correct'},
+      {text:"Jeder arbeitet weiter alleine.", type:'wrong'},
+      {text:"Dateien per Brieftaube verteilen.", type:'funny'}],
+    info:"📁 Einheitliche Ablage hilft allen." },
+  { q:"Kunden müssen Formulare herunterladen, ausdrucken, unterschreiben und zurückschicken.",
+    answers:[
+      {text:"Online‑Formular + digitale Unterschrift einführen.", type:'correct'},
+      {text:"Mehr Drucker kaufen.", type:'wrong'},
+      {text:"Das Faxgerät reaktivieren – retro.", type:'funny'}],
+    info:"✍️ Digital ersetzt Papier." },
+  { q:"Mitarbeiter haben Angst vor neuen digitalen Arbeitsweisen.",
+    answers:[
+      {text:"Kurz schulen und zeigen, wie es hilft.", type:'correct'},
+      {text:"Einfach ohne Erklärung durchdrücken.", type:'wrong'},
+      {text:"Sticker „Wir ♥ digital“ verteilen.", type:'funny'}],
+    info:"👥 Gute Kommunikation ist wichtig." },
+  { q:"Der Chef sagt: „Wir brauchen überall KI!“ – aber ohne klares Ziel.",
+    answers:[
+      {text:"Kleines Projekt mit klarer Aufgabe testen.", type:'correct'},
+      {text:"Alles sofort umstellen, egal wie.", type:'wrong'},
+      {text:"Die Kantine von KI planen lassen.", type:'funny'}],
+    info:"🎯 Pilotprojekt statt Hype." },
+  { q:"Rechnungen kommen per Post und werden manuell abgetippt.",
+    answers:[
+      {text:"Scan + automatische Erkennung + Freigabeprozess.", type:'correct'},
+      {text:"Alle schneller tippen lassen.", type:'wrong'},
+      {text:"In Schönschrift abschreiben.", type:'funny'}],
+    info:"🧾 Digitale Workflows sparen Zeit & Fehler." },
+  { q:"Termine werden mit Post‑its und Papierlisten geplant.",
+    answers:[
+      {text:"Gemeinsamen Online‑Kalender einführen.", type:'correct'},
+      {text:"Zettel farbig markieren – reicht.", type:'wrong'},
+      {text:"Termine auf Papierfliegern verschicken.", type:'funny'}],
+    info:"📅 Digitaler Kalender = weniger Chaos." },
+  { q:"Wissen liegt verteilt in vielen Word‑Dokumenten – keiner findet etwas.",
+    answers:[
+      {text:"Wissensdatenbank (z. B. SharePoint) nutzen.", type:'correct'},
+      {text:"Alles per E‑Mail verteilen.", type:'wrong'},
+      {text:"In Geheimschrift speichern.", type:'funny'}],
+    info:"📚 Zentraler Wissensort hilft allen." },
+  { q:"Dokumente müssen von mehreren Personen freigegeben werden – das dauert ewig.",
+    answers:[
+      {text:"Digitalen Freigabe‑Workflow aufsetzen.", type:'correct'},
+      {text:"Alle Freigaben abschaffen.", type:'wrong'},
+      {text:"Freigaben per Würfel entscheiden.", type:'funny'}],
+    info:"✅ Workflows beschleunigen Abläufe." },
+  { q:"Eine neue Software soll eingeführt werden. Viele sind unsicher.",
+    answers:[
+      {text:"Klein starten (Pilot) + Feedback sammeln.", type:'correct'},
+      {text:"Alle sofort zwingen – fertig.", type:'wrong'},
+      {text:"Software im Lostopf ziehen.", type:'funny'}],
+    info:"🧪 Pilot + Feedback = gute Einführung." }
 ];
 
 let dm_questions=[], dm_state={i:0,points:0,started:false,total:6};
@@ -607,8 +707,16 @@ function end_dm(){
   const b1=document.getElementById('dm_opt1');
   const b2=document.getElementById('dm_opt2');
   const b3=document.getElementById('dm_opt3');
+
+  // --- WICHTIG: Buttons wieder aktivieren + Klassen resetten ---
+  [b1,b2,b3].forEach(b=>{
+    b.disabled=false;
+    b.classList.remove('is-correct','is-wrong','is-dim');
+    b.style.display='block';
+  });
+
   b1.innerText="🔄 Nochmal spielen"; b1.onclick=()=>resetGame('dm');
-  b2.innerText="🏠 Zurück"; b2.onclick=()=>showSection('home');
+  b2.innerText="🏠 Zurück";         b2.onclick=()=>showSection('home');
   b3.style.display='none';
 
   document.getElementById('dm_info').innerText="Digitalisierung: Prozesse verstehen, sinnvoll verbessern, Menschen mitnehmen.";
@@ -616,14 +724,22 @@ function end_dm(){
 
 /* Reset */
 function resetGame(which){
-  const b3=document.getElementById(`${which}_opt3`);
-  if(b3 && b3.style.display==='none') b3.style.display='block';
+  // Buttons wieder aktivieren + Styles zurücksetzen (robust)
+  ['opt1','opt2','opt3'].forEach(o=>{
+    const b = document.getElementById(`${which}_${o}`);
+    if(b){
+      b.disabled = false;
+      b.classList.remove('is-correct','is-wrong','is-dim');
+      b.style.display = 'block';
+    }
+  });
 
   if(which==='si'){ si_state.started=false; start_si(); }
   if(which==='ae'){ ae_state.started=false; start_ae(); }
   if(which==='dm'){ dm_state.started=false; start_dm(); }
 }
+
+/* Startbildschirm lädt noch nichts – erst beim Wechsel */
 </script>
 </body>
 </html>
-``
